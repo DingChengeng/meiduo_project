@@ -6,9 +6,24 @@ from django import http
 from django.db import DatabaseError
 from django.urls import reverse
 from users.models import User
+from meiduo_mall.utils.response_code import RETCODE
 
 
 # Create your views here.
+class UsernameCountView(View):
+
+    def get(self, request, username):
+
+        count = User.objects.filter(username=username).count()
+        return http.JsonResponse({'code': RETCODE.OK, 'err_msg': 'OK', 'count': count})
+
+
+class MobileCountView(View):
+
+    def get(self, request, mobile):
+
+        count = User.objects.filter(mobile=mobile).count()
+        return http.JsonResponse({'code': RETCODE.OK, 'err_msg': 'OK', 'count': count})
 
 
 class RegisterView(View):
