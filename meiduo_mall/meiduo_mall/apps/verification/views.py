@@ -7,8 +7,9 @@ import logging
 from . import constants
 from verification.libs.captcha.captcha import captcha
 from utils.response_code import RETCODE
-from verification.libs.yuntongxun.ccp_sms import CCP
-# Create your views here.
+from celery_tasks.sms.tasks import send_sms_code
+# from verification.libs.yuntongxun.ccp_sms import CCP
+# # Create your views here.
 
 logger = logging.getLogger('django')
 
@@ -67,8 +68,9 @@ class SMSCodeView(View):
         pl.execute()
 
         # 发送验证码
-        ccp = CCP()
-        ccp.send_template_sms(mobile, [sms_code, constants.SMS_CODE_REDIS_EXPIRES//60], constants.SEND_SMS_TEMPLATE_ID)
+        # ccp = CCP()
+        # ccp.send_template_sms(mobile, [sms_code, constants.SMS_CODE_REDIS_EXPIRES//60], constants.SEND_SMS_TEMPLATE_ID)
+        send_sms_code.delay(mobile, sms_code)
 
         # 响应结果
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': '发送短信成功'})
