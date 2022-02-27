@@ -4,6 +4,7 @@ from django.views import View
 from django import http
 from django.db import DatabaseError
 from django.urls import reverse
+from django.contrib.auth import login
 from django_redis import get_redis_connection
 
 from users.models import User
@@ -69,12 +70,10 @@ class RegisterView(View):
             return http.HttpResponseForbidden('请勾选用户协议')
 
         try:
-            User.objects.create_user(username=username, password=password, mobile=mobile)
+            user = User.objects.create_user(username=username, password=password, mobile=mobile)
         except DatabaseError:
             return render(request, 'register.html', context={'register_errmsg': '注册失败'})
 
+        login(request, user)
+
         return redirect(reverse('contents:index'))
-
-
-
-
