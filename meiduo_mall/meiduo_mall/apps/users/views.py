@@ -4,7 +4,7 @@ from django.views import View
 from django import http
 from django.db import DatabaseError
 from django.urls import reverse
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate,logout
 from django_redis import get_redis_connection
 
 from users.models import User
@@ -76,4 +76,57 @@ class RegisterView(View):
 
         login(request, user)
 
-        return redirect(reverse('contents:index'))
+        response = redirect(reverse('contents:index'))
+        response.set_cookie('username', user.username, max_age=3600)
+
+        return response
+
+
+class LoginView(View):
+
+    def get(self, request):
+
+        return render(request, 'login.html')
+
+    def post(self, request):
+
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        remembered = request.POST.get('remembered')
+
+        if not all([username, password]):
+
+            return http.HttpResponseForbidden('缺少必传参数')
+
+        if not re.match(r'^[0-9a-zA-Z_-]{5,20}$', username):
+            return http.HttpResponseForbidden('请输入5-20个字符的用户名')
+
+        if not re.match(r'^[0-9a-zA-Z]{8,20}$', password):
+            return http.HttpResponseForbidden('请输入8-20位的密码')
+
+        user = authenticate(username=username, password=password)
+        if not user:
+            return render(request, 'login.html', context={'account_errmsg': '用户名或密码错误'})
+
+        login(request, user)
+
+        if remembered != 'on':
+            request.session.set_expiry(0)
+        else:
+            # None 默认是两周
+            request.session.set_expiry(None)
+
+        response = redirect(reverse('contents:index'))
+        response.set_cookie('username', user.username, max_age=3600)
+
+        return response
+
+
+class LogoutView(View):
+
+    def get(self, request):
+
+        logout(request)
+        response = redirect(reverse('contents:index'))
+        response.delete_cookie('username')
+        return response

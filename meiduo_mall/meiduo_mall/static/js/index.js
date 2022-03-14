@@ -11,6 +11,7 @@ let vm = new Vue({
         cart_total_count: 0,
         carts: [],
     },
+
     methods: {
         // 获取简单购物车数据
         get_carts(){

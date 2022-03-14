@@ -6,7 +6,7 @@ import logging
 
 from . import constants
 from verification.libs.captcha.captcha import captcha
-from utils.response_code import RETCODE
+from meiduo_mall.utils.response_code import RETCODE
 from celery_tasks.sms.tasks import send_sms_code
 # from verification.libs.yuntongxun.ccp_sms import CCP
 # # Create your views here.
