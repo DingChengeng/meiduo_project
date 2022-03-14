@@ -6,6 +6,7 @@ from django.db import DatabaseError
 from django.urls import reverse
 from django.contrib.auth import login, authenticate,logout
 from django_redis import get_redis_connection
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from users.models import User
 from meiduo_mall.utils.response_code import RETCODE
@@ -116,7 +117,11 @@ class LoginView(View):
             # None 默认是两周
             request.session.set_expiry(None)
 
-        response = redirect(reverse('contents:index'))
+        next = request.GET.get('next')
+        if next:
+            response = redirect(next)
+        else:
+            response = redirect(reverse('contents:index'))
         response.set_cookie('username', user.username, max_age=3600)
 
         return response
@@ -130,3 +135,10 @@ class LogoutView(View):
         response = redirect(reverse('contents:index'))
         response.delete_cookie('username')
         return response
+
+
+class UserInfoView(LoginRequiredMixin, View):
+
+    def get(self, request):
+
+        return render(request, 'user_center_info.html',)
