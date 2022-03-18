@@ -4,7 +4,7 @@ from django.views import View
 from django import http
 from django.db import DatabaseError
 from django.urls import reverse
-from django.contrib.auth import login, authenticate,logout
+from django.contrib.auth import login, authenticate, logout
 from django_redis import get_redis_connection
 from django.contrib.auth.mixins import LoginRequiredMixin
 
