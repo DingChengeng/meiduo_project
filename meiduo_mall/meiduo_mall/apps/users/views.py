@@ -8,8 +8,11 @@ from django.contrib.auth import login, authenticate, logout
 from django_redis import get_redis_connection
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from meiduo_mall.utils.views import LoginRequiredJsonMixin
 from users.models import User
 from meiduo_mall.utils.response_code import RETCODE
+from celery_tasks.email.tasks import send_verify_email
+from users.utils import generate_verify_email_url, check_verify_email_token
 # Create your views here.
 
 logger = logging.getLogger('django')
@@ -153,7 +156,7 @@ class UserInfoView(LoginRequiredMixin, View):
         return render(request, 'user_center_info.html', context=context)
 
 
-class EmailView(View):
+class EmailView(LoginRequiredJsonMixin, View):
 
     def put(self, request):
 
@@ -164,7 +167,7 @@ class EmailView(View):
         if not email:
             return http.HttpResponseForbidden('缺少email参数')
 
-        if not re.match(r'^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$', email):
+        if not re.match(r'^[a-z0-9][\w.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$', email):
             return http.HttpResponseForbidden('参数email有误')
 
         try:
@@ -174,4 +177,31 @@ class EmailView(View):
             logger.error(e)
             return http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': '添加email失败'})
 
+        verify_url = generate_verify_email_url(request.user)
+        send_verify_email.delay(to_email=email, verify_url=verify_url)
+
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': '添加email成功'})
+
+
+class VerifyEmailView(View):
+
+    def get(self, request):
+
+        token = request.GET.get('token')
+
+        if not token:
+            return http.HttpResponseForbidden('缺少token')
+
+        user = check_verify_email_token(token)
+        if not user:
+            return http.HttpResponseForbidden('无效的token')
+        try:
+            user.email_active = True
+            user.save()
+        except Exception as e:
+            logger.error(e)
+            return http.HttpResponseServerError('邮箱激活失败')
+
+        return redirect(reverse('users:info'))
+
+
