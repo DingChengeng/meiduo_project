@@ -205,3 +205,8 @@ class VerifyEmailView(View):
         return redirect(reverse('users:info'))
 
 
+class AddressView(LoginRequiredMixin, View):
+
+    def get(self, request):
+
+        return render(request, 'user_center_site.html')
