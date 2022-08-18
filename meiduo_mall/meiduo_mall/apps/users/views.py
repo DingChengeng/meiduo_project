@@ -211,12 +211,27 @@ class AddressView(LoginRequiredMixin, View):
     def get(self, request):
 
         login_user = request.user
-        address = Address.objects.filter(user=login_user, is_deleted=False)
-        content = {
+        addresses = Address.objects.filter(user=login_user, is_deleted=False)
 
+        address_dict_list = [{
+            "id": ad.id,
+            "title": ad.title,
+            "receiver": ad.receiver,
+            "province": ad.province.name,
+            "city": ad.city.name,
+            "district": ad.district.name,
+            "place": ad.place,
+            "mobile": ad.mobile,
+            "tel": ad.tel,
+            "email": ad.email
+        } for ad in addresses]
+
+        context = {
+            'default_address_id': login_user.default_address_id,
+            'addresses': address_dict_list,
         }
 
-        return render(request, 'user_center_site.html')
+        return render(request, 'user_center_site.html', context)
 
 
 class CreateAddressView(View):
