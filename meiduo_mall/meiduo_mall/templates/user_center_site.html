@@ -66,11 +66,24 @@
                 <span>你已创建了<b>[[ addresses.length ]]</b>个收货地址，最多可创建<b>20</b>个</span>
             </div>
             <div class="site_con" v-for="(address, index) in addresses">
+{#                <div class="site_title">#}
+{#                    <h3>[[ address.title ]]</h3>#}
+{#                    <a href="javascript:;" class="edit_icon"></a>#}
+{#                    <em v-if="address.id===default_address_id">默认地址</em>#}
+{#                    <span @click="delete_address(index)" class="del_site">×</span>#}
+{#                </div>#}
                 <div class="site_title">
-                    <h3>[[ address.title ]]</h3>
-                    <a href="javascript:;" class="edit_icon"></a>
+                    <div v-if="edit_title_index===index">
+                        <input v-model="new_title" type="text" name="">
+                        <input @click="save_title(index)" type="button" name="" value="保 存">
+                        <input @click="cancel_title(index)" type="reset" name="" value="取 消">
+                    </div>
+                    <div>
+                        <h3>[[ address.title ]]</h3>
+                        <a @click="show_edit_title(index)" class="edit_title"></a>
+                    </div>
                     <em v-if="address.id===default_address_id">默认地址</em>
-                    <span class="del_site">×</span>
+                    <span @click="delete_address(index)">×</span>
                 </div>
                 <ul class="site_list">
                     <li><span>收货人：</span><b>[[ address.receiver ]]</b></li>
