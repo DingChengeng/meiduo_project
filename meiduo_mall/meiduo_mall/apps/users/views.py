@@ -227,7 +227,7 @@ class AddressView(LoginRequiredMixin, View):
         } for ad in addresses]
 
         context = {
-            'default_address_id': login_user.default_address_id,
+            'default_address_id': login_user.default_address_id or '0',
             'addresses': address_dict_list,
         }
 

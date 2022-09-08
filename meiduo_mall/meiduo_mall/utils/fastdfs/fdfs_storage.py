@@ -1,15 +1,15 @@
 from django.core.files.storage import Storage
-# from meiduo_mall.settings
+from django.conf import settings
 
 
 class FastDFSStorage(Storage):
     """自定义文件存储系统，修改存储的方案"""
-    # def __init__(self, fdfs_base_url=None):
-    #     """
-    #     构造方法，可以不带参数，也可以携带参数
-    #     :param base_url: Storage的IP
-    #     """
-    #     self.fdfs_base_url = fdfs_base_url or settings.FDFS_BASE_URL
+    def __init__(self, fdfs_base_url=None):
+        """
+        构造方法，可以不带参数，也可以携带参数
+        :param base_url: Storage的IP
+        """
+        self.fdfs_base_url = fdfs_base_url or settings.FDFS_BASE_URL
 
     def _open(self, name, mode='rb'):
 
@@ -27,4 +27,4 @@ class FastDFSStorage(Storage):
         """
         # return 'http://192.168.103.158:8888/' + name
         # return 'http://image.meiduo.site:8888/' + name
-        return 'http://172.16.85.110:8888/' + name
+        return self.fdfs_base_url + name
