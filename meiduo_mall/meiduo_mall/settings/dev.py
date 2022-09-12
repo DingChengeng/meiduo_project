@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'verification',
     'oauth',
     'areas',
+    'goods',  # 商品模块
 ]
 
 MIDDLEWARE = [

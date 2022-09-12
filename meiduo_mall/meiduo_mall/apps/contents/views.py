@@ -1,7 +1,8 @@
 from collections import OrderedDict
 from django.shortcuts import render
 from django.views import View
-from contents.models import GoodsChannel, ContentCategory
+from goods.models import GoodsChannel
+from contents.models import ContentCategory
 
 
 # Create your views here.
@@ -44,3 +45,5 @@ class IndexView(View):
         }
 
         return render(request, 'index.html', context)
+
+
