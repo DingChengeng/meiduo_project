@@ -436,9 +436,9 @@ html,body{height:100%}
 
 /* 二级页面面包屑导航 */
 .breadcrumb{
-	width:1200px;height:40px;margin:0 auto;
+	width:1200px;height:40px;margin:0 auto;text-align:left;
 }
-.breadcrumb a{line-height:40px;color:#fe0000}
+.breadcrumb a{line-height:40px;color:#fe0000;}
 .breadcrumb a:hover{color:#ff8800}
 .breadcrumb span{line-height:40px;color:#fe0000;padding:0 5px;}
 
