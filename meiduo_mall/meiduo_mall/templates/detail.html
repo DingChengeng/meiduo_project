@@ -127,22 +127,6 @@
                     <a @click="on_minus" class="minus fr">-</a>
 				</div> 
 			</div>
-{#			<div class="type_select">#}
-{#				<label>屏幕尺寸:</label>#}
-{#				<a href="javascript:;" class="select">13.3英寸</a>#}
-{#				<a href="javascript:;">15.4英寸</a>#}
-{#			</div>#}
-{#			<div class="type_select">#}
-{#				<label>颜色:</label>#}
-{#				<a href="javascript:;" class="select">深灰色</a>#}
-{#				<a href="javascript:;">银</a>#}
-{#			</div>#}
-{#			<div class="type_select">#}
-{#				<label>版本:</label>#}
-{#				<a href="javascript:;" class="select">core i5/8G内存/256G存储</a>#}
-{#				<a href="javascript:;">core i5/8G内存/128G存储</a>#}
-{#				<a href="javascript:;">core i5/8G内存/512G存储/Multi-Touch Bar</a>#}
-{#			</div>#}
             {% for spec in specs %}
             <div class="type_select">
                 <label>{{ spec.name }}:</label>
@@ -159,7 +143,7 @@
             {% endfor %}
 			<div class="total">总价：<em>[[ sku_amount ]]元</em></div>
 			<div class="operate_btn">
-				<a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>				
+				<a @click="add_carts" class="add_cart" id="add_cart">加入购物车</a>
 			</div>
 		</div>
 	</div>
@@ -234,7 +218,7 @@
     <script type="text/javascript">
 		let category_id = "{{ sku.category.id }}";
 		let sku_price = "{{ sku.price }}";
-        let sku_id = "";
+        let sku_id = "{{ sku.id }}";
     </script>
 	<script type="text/javascript" src="{{ static('js/common.js') }}"></script>
 	<script type="text/javascript" src="{{ static('js/detail.js') }}"></script>
